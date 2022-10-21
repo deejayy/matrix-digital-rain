@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta http-equiv="pragma" content="no-cache" />
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <meta http-equiv="content-language" content="en-US" />
+
+    <style>
+      @font-face {
+        font-family: "Classic Console Neue";
+        src: url("clacon2.woff2") format("woff2");
+      }
+
+      body {
+        padding: 0;
+        margin: 0;
+        background-color: rgba(0, 0, 0, 1);
+        color: rgba(255, 255, 255, 0.8);
+        height: 100vh;
+        font-family: "Classic Console Neue";
+      }
+
+      canvas {
+        display: block;
+        font-family: "Classic Console Neue";
+        background-color: black;
+        width: 100%;
+        height: 100vh;
+      }
+
+      .rain {
+        pointer-events: none;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div
+      class="rain"
+      id="matrix-digital-rain-animation-javascript-js"
+      title="Matrix Digital Rain Animation JavaScript JS"
+    >
+      <canvas id="canvas"></canvas>
+    </div>
+    <script>
+      String.prototype.replaceAt = function (idx, char) {
+        return this.substr(0, idx) + char + this.substr(idx + char.length);
+      };
+
+      Object.prototype.pick = function () {
+        return this[~~(Math.random() * this.length)];
+      };
+
+      const charList =
+        "0123456789#$%&*+/:;<>?@€ƒŸ£¢¤¥§¶µØßÞæ÷ħłƀƍƐƔƛƥƩƦƭƱƴƺƾǶȝȜȢȽɀɁɅɊ˸ΔΓΘΞΦΩΨδγλξτφωЋЏДЛФЦЭҔҦҨҰҸ";
+
+      const preColors = [
+        "rgba(224, 224, 255, 1)",
+        "rgba(192, 224, 192, 1)",
+        "rgba( 96, 192,  96, 1)",
+      ];
+
+      const endColors = [
+        "rgba( 32,  96,  32, 0.0)",
+        "rgba( 32,  96,  32, 0.2)",
+        "rgba( 32,  96,  32, 0.3)",
+        "rgba( 32,  96,  32, 0.4)",
+        "rgba( 32,  96,  32, 0.5)",
+        "rgba( 32,  96,  32, 0.6)",
+        "rgba( 32,  96,  32, 0.7)",
+        "rgba( 32,  96,  32, 0.8)",
+        "rgba( 32,  96,  32, 0.9)",
+        "rgba( 32,  96,  32, 1.0)",
+      ];
+
+      const ANIMATION_TICK = 33;
+      const speedFactor = 3;
+
+      const columnPadding = 2;
+      const canvas = document.getElementById("canvas");
+      const ctx = canvas.getContext("2d");
+
+      canvas.width = canvas.offsetWidth;
+      canvas.height = canvas.offsetHeight;
+
+      const fontHeight = 20;
+      const fontWidth = fontHeight / 2 + columnPadding;
+      const COLUMNS = canvas.width / fontWidth;
+      const lines = canvas.height / fontHeight;
+
+      const numCols = canvas.width / fontWidth + 1;
+      const minHeight = preColors.length + endColors.length + 2;
+
+      ctx.font = `${fontHeight}px 'Classic Console Neue'`;
+      ctx.shadowColor = "white";
+      ctx.imageSmoothingEnabled = false;
+
+      const draw = (char, x, y, color, shadow = false, limit = 5) => {
+        ctx.shadowBlur = shadow * 5;
+        ctx.fillStyle = color;
+
+        if (y < lines - limit) {
+          for (let i = 0; i <= shadow * 1; i++) {
+            ctx.fillText(char, x * fontWidth, (y + 1) * fontHeight);
+          }
+        }
+      };
+
+      class Col {
+        constructor(pos = 0) {
+          this.pos = pos;
+          this.init();
+        }
+
+        init = () => {
+          this.chars = "";
+          this.bottom = -1 * ~~(Math.random() * lines) - endColors.length;
+          this.len = Math.max(~~(Math.random() * lines * 3), minHeight);
+        };
+
+        logic = () => {
+          if (this.bottom++ < this.len) {
+            this.chars = `${charList.pick()}${this.chars}`.substr(0, this.len);
+          }
+          if (this.chars.length > 5) {
+            this.chars = this.chars.replaceAt(
+              ~~(Math.random() * (this.chars.length - 1)),
+              charList.pick()
+            );
+          }
+          if (this.bottom - this.chars.length > lines) {
+            this.init();
+          }
+        };
+
+        render = (shadow) => {
+          this.chars.split("").forEach((char, idx) => {
+            let color =
+              idx > this.chars.length - endColors.length - 1
+                ? endColors[this.chars.length - idx]
+                : preColors[idx];
+            draw(
+              char,
+              this.pos,
+              this.bottom - idx,
+              color,
+              shadow && idx === 0,
+              0
+            );
+          });
+        };
+      }
+
+      var col = new Col();
+      var cols = Array.from({ length: numCols }, (v, idx) => new Col(idx));
+
+      var counter = 0;
+
+      function run() {
+        setInterval(function () {
+          requestAnimationFrame(function () {
+            counter++;
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            cols.forEach((col, idx) => {
+              if ((tick = counter % speedFactor >= idx % speedFactor)) {
+                if ((skip = counter % 2 === 0)) {
+                  col.logic();
+                }
+              }
+              col.render(tick && skip);
+            });
+          });
+        }, ANIMATION_TICK);
+      }
+
+      setTimeout(run, 0);
+    </script>
+  </body>
+</html>
