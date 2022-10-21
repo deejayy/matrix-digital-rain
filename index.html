@@ -59,35 +59,35 @@
         "0123456789#$%&*+/:;<>?@€ƒŸ£¢¤¥§¶µØßÞæ÷ħłƀƍƐƔƛƥƩƦƭƱƴƺƾǶȝȜȢȽɀɁɅɊ˸ΔΓΘΞΦΩΨδγλξτφωЋЏДЛФЦЭҔҦҨҰҸ";
 
       const preColors = [
-        "rgba(224, 224, 255, 1)",
+        "rgba(224, 255, 255, 1)",
         "rgba(192, 224, 192, 1)",
         "rgba( 96, 192,  96, 1)",
       ];
 
       const endColors = [
-        "rgba( 32,  96,  32, 0.0)",
-        "rgba( 32,  96,  32, 0.2)",
-        "rgba( 32,  96,  32, 0.3)",
-        "rgba( 32,  96,  32, 0.4)",
-        "rgba( 32,  96,  32, 0.5)",
-        "rgba( 32,  96,  32, 0.6)",
-        "rgba( 32,  96,  32, 0.7)",
-        "rgba( 32,  96,  32, 0.8)",
-        "rgba( 32,  96,  32, 0.9)",
-        "rgba( 32,  96,  32, 1.0)",
+        "rgba( 96, 192,  96, 0.0)",
+        "rgba( 96, 192,  96, 0.2)",
+        "rgba( 96, 192,  96, 0.3)",
+        "rgba( 96, 192,  96, 0.4)",
+        "rgba( 96, 192,  96, 0.5)",
+        "rgba( 96, 192,  96, 0.6)",
+        "rgba( 96, 192,  96, 0.7)",
+        "rgba( 96, 192,  96, 0.8)",
+        "rgba( 96, 192,  96, 0.9)",
+        "rgba( 96, 192,  96, 1.0)",
       ];
 
-      const ANIMATION_TICK = 33;
+      const ANIMATION_TICK = 30;
       const speedFactor = 3;
 
-      const columnPadding = 2;
+      const columnPadding = 0;
       const canvas = document.getElementById("canvas");
       const ctx = canvas.getContext("2d");
 
       canvas.width = canvas.offsetWidth;
       canvas.height = canvas.offsetHeight;
 
-      const fontHeight = 20;
+      const fontHeight = 24;
       const fontWidth = fontHeight / 2 + columnPadding;
       const COLUMNS = canvas.width / fontWidth;
       const lines = canvas.height / fontHeight;
@@ -119,7 +119,7 @@
         init = () => {
           this.chars = "";
           this.bottom = -1 * ~~(Math.random() * lines) - endColors.length;
-          this.len = Math.max(~~(Math.random() * lines * 3), minHeight);
+          this.len = Math.max(~~(Math.random() * lines * 1.2), minHeight);
         };
 
         logic = () => {
